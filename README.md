@@ -45,7 +45,7 @@ class ProductWizard extends WizardComponent
         return [
             'example-wizard.steps.step1' => [
                 'number' => $this->number,
-                // 'stepText' => 'fake text to simulate it resets', // Uncomment to see it reset
+                // 'stepText' => 'fake text to simulate it resets', // Uncomment this line to see it is getting reset on Step3.
             ],
         ];
     }
@@ -63,6 +63,27 @@ class ProductState extends State
             'number' => $data['number'],
             'stepText' => $data['stepText'], // This will throw an error in on the third step
         ];
+    }
+}
+
+// Step1.php
+class Step1 extends StepComponent
+{
+    public int $number;
+
+    #[Validate('required')]
+    public string $stepText;
+
+    public function render()
+    {
+        return view('checkout-wizard.steps.step-1');
+    }
+
+    public function nextStep()
+    {
+        $this->validate();
+
+        parent::nextStep();
     }
 }
 
