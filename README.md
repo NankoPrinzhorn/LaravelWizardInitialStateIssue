@@ -14,6 +14,64 @@ Demo screen recording:
 
 https://github.com/user-attachments/assets/2069b1d4-af65-45b8-a4d7-12738c3ea75f
 
+Code:
+```php
+// Welcome.blade.php
+<div>
+    <livewire:example-wizard.product-wizard :$number />
+</div
+
+// ProductWizard.php
+class ProductWizard extends WizardComponent
+{
+    public int $number;
+
+    public function steps(): array
+    {
+        return [
+            Step1::class,
+            Step2::class,
+            Step3::class,
+        ];
+    }
+
+    public function stateClass(): string
+    {
+        return ProductState::class;
+    }
+
+    public function initialState(): ?array
+    {
+        return [
+            'example-wizard.steps.step1' => [
+                'number' => $this->number,
+                // 'stepText' => 'fake text to simulate it resets', // Uncomment to see it reset
+            ],
+        ];
+    }
+}
+
+// ProductState.php
+class ProductState extends State
+{
+    public function getStep1Data()
+    {
+        $data = $this->forStepClass(Step1::class);
+        $data = $this->forStep('example-wizard.steps.step1');
+
+        return [
+            'number' => $data['number'],
+            'stepText' => $data['stepText'], // This will throw an error in on the third step
+        ];
+    }
+}
+
+// step-2.blade.php, step-3.blade.php
+<div>
+    Data from step 1: {{ json_encode($this->state()->getStep1Data()) }}
+</div>
+```
+
 ## Scenario
 
 In Step1, two values are defined:
